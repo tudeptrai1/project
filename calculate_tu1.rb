@@ -16,13 +16,13 @@ def calculate(n, m)
 
     next unless eval(sum_a).between?(1, 100) && !result.include?(sum_a)
 
-    sum_a.gsub!(/\+\-|\-\+/, '-')
+    sum_a.gsub!(/\+-|-\+/, '-')
     result << sum_a
     result.uniq!
   end
 
   result
-rescue => e
+rescue e
   e
 end
 
