@@ -1,1 +1,0 @@
-p "ATTGGDCGTTAA".match?(/A?T?G?C?/)
