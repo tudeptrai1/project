@@ -1,20 +1,23 @@
+# frozen_string_literal: true
+
 require 'test/unit/assertions'
+# rubocop:disable Style/MixinUsage
 include Test::Unit::Assertions
+# rubocop:enable Style/MixinUsage
 
 def input_error
   raise 'Invalid input'
 end
 
 def calculate(n, m)
-  input_error unless [2, 3].include?(m) || n.positive?
-
+  input_error unless valid_input?(n, m)
   result = []
 
   while result.size < n
-    a = m.times.map { rand(-99..99) }.sort.reverse
+    a = generate_array(m)
     sum_a = a.join('+')
 
-    next unless eval(sum_a).between?(1, 100) && !result.include?(sum_a)
+    next unless valid_sum?(sum_a, result)
 
     sum_a.gsub!(/\+-|-\+/, '-')
     result << sum_a
@@ -24,6 +27,21 @@ def calculate(n, m)
   result
 rescue e
   e
+end
+
+private
+
+def valid_input?(n, m)
+  [2, 3].include?(m) || n.positive?
+end
+
+def generate_array(size)
+  size.times.map { rand(-99..99) }.sort.reverse
+end
+
+# rubocop:disable Security/Eval
+def valid_sum?(sum_a, result)
+  eval(sum_a).between?(1, 100) && !result.include?(sum_a)
 end
 
 # Test Numbers == m ?
@@ -43,6 +61,7 @@ end
 Test.assert_block do
   calculate(15, 3).any? { |num| (0..100).include?(eval(num)) }
 end
+# rubocop:enable Security/Eval
 
 # Test Number of Numbers == n ?
 Test.assert_block do
